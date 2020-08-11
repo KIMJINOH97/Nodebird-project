@@ -8,7 +8,9 @@ const passport = require('passport');
 require('dotenv').config();
 
 const indexRouter = require('./routes/page');
+const userRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 
 //const userRouter = require('./routes/user');
 const { sequelize } = require('./models');
@@ -23,7 +25,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('port', process.env.PORT || 8001);
 
 app.use(morgan('dev')); // 개발모드 설정
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // 여기 기본 주소는 '/'임. 생략가능
+app.use('/img', express.static(path.join(__dirname, 'uploads'))); //  /img/abc.png 서버 경로와 프론트 경로는 다름. 해커들이 추적 어렵게.
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET)); // 밑의 session의 secret와 같게 해주는게 도움 됨
@@ -44,7 +47,9 @@ app.use(passport.initialize()); // 미들웨어도 있음. passport설정 초기
 app.use(passport.session()); // local로 했을 때 사용자 정보를 session에 저장함, express session보단 아래에 있어야함
 
 app.use('/', indexRouter);
+app.use('/user', userRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => {
     const err = new Error('Not Found');

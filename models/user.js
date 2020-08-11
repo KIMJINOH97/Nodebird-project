@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             password: {
                 type: DataTypes.STRING(100),
                 allowNull: true, // 카카오 로그인 할 때는 필요 없으므로
+                defaultValue: 'Sisisisisibalalal',
             },
             provider: {
                 type: DataTypes.STRING(10),

@@ -23,13 +23,13 @@ module.exports = (passport) => {
                     } else {
                         const newUser = await User.create({
                             // 카카오가 profile객체에 담아 줌 다른 것들도 추가 할 때 console.log로 profile안에 뭐가 들어있는 지 확인
-                            email: profile._json && profile._json.kakao_account.email, // email도 다 들어있음
+                            email: profile._json && profile._json.kakao_account.email,
                             nick: profile._json.kakao_account.profile.nickname,
                             snsId: profile.id, // 각 소셜미디어에서 id가 있는데 구별위해 밑의 kakao를 넣어줌
                             provider: 'kakao',
                         });
+                        done(null, newUser);
                     }
-                    done(null, newUser);
                 } catch (error) {
                     console.error(error);
                     done(error);

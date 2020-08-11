@@ -18,8 +18,23 @@ module.exports = (passport) => {
         // if (user[id]) {
         //     done(user[id]);
         // } else {
-        User.findOne({ where: { id } })
-            .then((user) => done(null, user)) //(user[id] = user), done(null, user);
+        User.findOne({
+            // req.user를 수정하고싶다면 deserializeUser에서 해야함.
+            where: { id },
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'nick'],
+                    as: 'Followers',
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'nick'],
+                    as: 'Followings',
+                },
+            ],
+        })
+            .then((user) => done(null, user)) //(user[id] = user), done(null, user) 팔로워를 여기서 넣는다.
             .catch((err) => done(err));
     });
     local(passport);
