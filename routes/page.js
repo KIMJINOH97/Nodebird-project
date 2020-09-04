@@ -4,15 +4,29 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { Post, User } = require('../models');
 
 // 프로필 페이지
-router.get('/profile', isLoggedIn, (req, res) => {
+router.get('/profile', isLoggedIn, async (req, res, next) => {
     // 로그인 한 사람만 들어옴
-    res.render('profile', { title: '내 정보 - NodeBird', user: null });
-    console.log('hihihihihihih');
+    res.render('profile', { title: 'profile', user: req.user });
+    try {
+        const follow = await User.findAll({
+            where: { id: req.user.id },
+            include: {
+                model: User,
+                as: 'Followers',
+            },
+        });
+        console.log(follow);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+    console.log('/user.tojson()', req.user.toJSON());
 });
 
 // 회원가입 페이지
 router.get('/join', isNotLoggedIn, (req, res) => {
     // 로그인 안 한 사람만 들어옴
+
     res.render('join', {
         title: '회원가입 - NodeBird',
         user: req.user,
