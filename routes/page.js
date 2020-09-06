@@ -38,12 +38,22 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 router.get('/', (req, res, next) => {
     Post.findAll({
         // 게시글 작성자 모델과 include로 연결 해주고, 작성자의 id,nick을 가져옴
-        include: {
-            model: User,
-            attributes: ['id', 'nick'],
-        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'nick'],
+            },
+            {
+                // include 에서 같은 모델이 여러개면 as로 가져온다.
+                model: User, //좋아요를 누른 사람들을 가져온다.
+                attributes: ['id', 'nick'],
+                as: 'Liker',
+            },
+        ],
+        // 여러 것을 include 할 때
     })
         .then((posts) => {
+            console.log(posts);
             res.render('main', {
                 title: 'NodeBird',
                 twits: posts,
